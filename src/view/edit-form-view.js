@@ -1,6 +1,5 @@
-import { destinations } from '../mock/destination.js';
-import { getItemFromItemsById, capitalizeType } from '../utils/utils.js';
-import { getOffersByType } from '../mock/offers.js';
+import { capitalizeType } from '../utils/utils.js';
+import { getOffersByType } from '../utils/offers.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { convertToBasicime } from '../utils/formatTime-Utils.js';
 
@@ -51,9 +50,8 @@ function createOffersTemplate(offers, type, id) {
   }).join('');
 }
 
-function createEditFormTemplate(tripPoint) {
+function createEditFormTemplate(tripPoint, destination) {
   const visibility = tripPoint.offersIDs.length === 0 ? 'visually-hidden' : '';
-  const destination = getItemFromItemsById(destinations, tripPoint.destination, tripPoint.id);
   return (
     `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -171,10 +169,12 @@ function createEditFormTemplate(tripPoint) {
 
 export default class EditFormView extends AbstractView {
   #tripPoint = null;
+  #destination = null;
 
-  constructor({tripPoint = BLANK_TRIPPOINT, onFormSubmit}) {
+  constructor({tripPoint = BLANK_TRIPPOINT, destination, onFormSubmit}) {
     super();
     this.#tripPoint = tripPoint;
+    this.#destination = destination;
     this._callback.onFormSubmit = onFormSubmit;
 
     this.element.querySelector('.event--edit')
@@ -184,7 +184,7 @@ export default class EditFormView extends AbstractView {
   }
 
   get template() {
-    return createEditFormTemplate(this.#tripPoint);
+    return createEditFormTemplate(this.#tripPoint, this.#destination);
   }
 
   #formSubmitHandler = (evt) => {

@@ -16,6 +16,7 @@ export default class TripPointPresenter {
   #tripPointComponent = null;
 
   #tripPoint = null;
+  #destination = null;
   #mode = Mode.DEFAULT;
 
   constructor({tripPointList, onModeChange}) {
@@ -23,19 +24,22 @@ export default class TripPointPresenter {
     this.#handleModeChange = onModeChange;
   }
 
-  init(tripPoint) {
+  init(tripPoint, destination) {
     this.#tripPoint = tripPoint;
+    this.#destination = destination;
 
     const prevTripPointComponent = this.#tripPointComponent;
     const prevEditFormComponent = this.#editFormComponent;
 
     this.#tripPointComponent = new TripPointView({
       tripPoint: this.#tripPoint,
+      destination: this.#destination,
       onEditClick: this.#handleEditClick
     });
 
     this.#editFormComponent = new EditFormView({
-      tripPoint,
+      tripPoint: this.#tripPoint,
+      destination: this.#destination,
       onFormSubmit: this.#handleFormSubmit
     });
 
@@ -44,12 +48,12 @@ export default class TripPointPresenter {
       return;
     }
 
-    if (this.#mode === Mode.DEFAULT) {
-      replace(this.#tripPointComponent, prevTripPointComponent);
-    }
-
-    if (this.#mode === Mode.EDITING) {
-      replace(this.#editFormComponent, prevEditFormComponent);
+    switch (this.#mode) {
+      case Mode.DEFAULT:
+        replace(this.#tripPointComponent, prevTripPointComponent);
+        break;
+      case Mode.EDITING:
+        replace(this.#editFormComponent, prevEditFormComponent);
     }
 
     remove(prevEditFormComponent);

@@ -1,8 +1,11 @@
+
+
 const getItemFromItemsById = (items, id) => (items.find((item) => item.id === id));
 
 const getRandomItemFromItems = (items) => items[Math.floor(Math.random() * items.length)];
 
 const getRandomPrice = () => Math.floor(Math.random() * 1000) + 100;
+const getRandomPicId = () => Math.floor(Math.random() * 5) + 1;
 
 const getRandomSliceFromItems = (items) => {
   const n = Math.floor(Math.random() * (items.length + 1));
@@ -18,4 +21,5 @@ const createIDgenerator = () => {
 const isEscapeKey = (evt) => evt.key === 'Escape';
 const capitalizeType = (type) => type.charAt(0).toUpperCase() + type.slice(1);
 
-export {getRandomItemFromItems, getRandomPrice, capitalizeType, createIDgenerator, getRandomSliceFromItems, getItemFromItemsById, isEscapeKey};
+export {getRandomItemFromItems, getRandomPrice, capitalizeType, createIDgenerator,
+  getRandomSliceFromItems, getItemFromItemsById, isEscapeKey, getRandomPicId};
