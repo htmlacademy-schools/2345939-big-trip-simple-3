@@ -1,4 +1,4 @@
-import { SortType } from './const';
+import { SortType } from '../mock/const';
 
 const sorts = {
   [SortType.DAY]: () => (0),
@@ -8,8 +8,6 @@ const sorts = {
   [SortType.TIME]: () => (0),
 };
 
-function generateSorter() {
-  return Object.keys(sorts).map((sortName) => sortName);
-}
+const generateSorter = () => Object.keys(sorts).map((sortName) => sortName);
 
-export {generateSorter};
+export { generateSorter };
