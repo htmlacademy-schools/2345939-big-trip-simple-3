@@ -15,4 +15,4 @@ const boardPresenter = new BoardPresenter({boardContainer: pageContainer, tripPo
 render(new FilterView(), siteFilterElement);
 
 boardPresenter.init();
-//жоска модуль 8.2
+//жоска модуль 8.3
