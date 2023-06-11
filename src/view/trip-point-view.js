@@ -6,7 +6,8 @@ import he from 'he';
 
 
 const createOffersTemplate = (offers, offersIDs, type) => {
-  const currentTypeOffers = offers.find((el) => el.type === type).offers;
+  const currentTypeOffers = getOffers(offers, type);
+  if (currentTypeOffers === null) { return offers; }
   return currentTypeOffers.filter((el) => offersIDs.includes(el.id)).map((offer) => `
     <li class="event__offer">
       <span class="event__offer-title">${offer.title}</span>
@@ -15,6 +16,14 @@ const createOffersTemplate = (offers, offersIDs, type) => {
     </li>`
   ).join('');
 };
+
+function getOffers(offers, type) {
+  if (offers.find((el) => el.type === type)) {
+    return offers.find((el) => el.type === type).offers;
+  }
+  return null;
+}
+
 
 const createTripPointTemplate = (tripPoint, destinations, offers) => {
   const destination = getItemFromItemsById(destinations, tripPoint.destination);
@@ -25,7 +34,7 @@ const createTripPointTemplate = (tripPoint, destinations, offers) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${tripPoint.type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${capitalizeType(tripPoint.type)} ${he.encode(destination.name)}</h3>
+      <h3 class="event__title">${capitalizeType(tripPoint.type)} ${getName(destination)}</h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="${convertToDateTime(tripPoint.dateFrom)}">${convertToTime(tripPoint.dateFrom)}</time>
@@ -47,6 +56,13 @@ const createTripPointTemplate = (tripPoint, destinations, offers) => {
   </li>`
   );
 };
+
+function getName(description) {
+  if (description !== null) {
+    return he.encode(description.name);
+  }
+  return '';
+}
 
 export default class TripPointView extends AbstractView {
   #tripPoint = null;

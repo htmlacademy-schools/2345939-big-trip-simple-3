@@ -49,7 +49,7 @@ const createOffersTemplate = (currentTypeOffers, checkedOffers, id, isDisabled) 
 );
 
 const createEventDetailsTemplate = (tripPoint, destination, offers, isDisabled) => {
-  const currentTypeOffers = offers.find((el) => el.type === tripPoint.type).offers;
+  const currentTypeOffers = getOffers(offers, tripPoint.type);
   return `
   <section class="event__section  event__section--offers ${(currentTypeOffers.length === 0) ? 'visually-hidden' : ''}" >
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -60,10 +60,17 @@ const createEventDetailsTemplate = (tripPoint, destination, offers, isDisabled) 
 
   <section class="event__section  event__section--destination ${(destination) ? '' : 'visually-hidden'}">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${destination.description}</p>
+    <p class="event__destination-description">${getDestination(destination)}</p>
     ${createDestinationDescriptionTemplate(destination)}
   </section>`;
 };
+
+function getDestination(destination) {
+  if (destination !== null) {
+    return destination.description;
+  }
+  return '';
+}
 
 const generateRollupButton = (isEditForm) => ((!isEditForm) ? '' : `
   <button class="event__rollup-btn" type="button">
@@ -122,7 +129,7 @@ const createEditFormTemplate = (tripPoint, destinations, offers, isEditForm) => 
         <label class="event__label event__type-output" for="event-destination-${tripPoint.id}">
         ${capitalizeType(tripPoint.type)}
         </label>
-        <input class="event__input event__input--destination" id="event-destination-${tripPoint.id}" type="text" name="event-destination" value="${he.encode(destination.name) }" list="destination-list-${tripPoint.id}" autocomplete="off" ${(tripPoint.isDisabled) ? 'disabled' : ''}>
+        <input class="event__input event__input--destination" id="event-destination-${tripPoint.id}" type="text" name="event-destination" value="${getName(destination)}" list="destination-list-${tripPoint.id}" autocomplete="off" ${(tripPoint.isDisabled) ? 'disabled' : ''}>
         <datalist id="destination-list-${tripPoint.id}">
           ${createDestinationList(destinations)}
         </datalist>
@@ -155,6 +162,20 @@ const createEditFormTemplate = (tripPoint, destinations, offers, isEditForm) => 
   </li>`
   );
 };
+
+function getName(description) {
+  if (description !== null) {
+    return he.encode(description.name);
+  }
+  return '';
+}
+
+function getOffers(offers, type) {
+  if (offers.find((el) => el.type === type)) {
+    return offers.find((el) => el.type === type).offers;
+  }
+  return offers;
+}
 
 export default class EditFormView extends AbstractStatefulView {
   #destinations = null;
@@ -323,12 +344,13 @@ export default class EditFormView extends AbstractStatefulView {
 
   static parseTripPointToState(tripPoint, offers) {
     return {...tripPoint,
-      currentTypeOffers: offers.find((el) => el.type === tripPoint.type).offers,
+      currentTypeOffers: getOffers(offers, tripPoint.type),
       isDisabled: false,
       isSaving: false,
       isDeleting: false,
     };
   }
+
 
   static parseStateToTripPoint(state) {
     const tripPoint = {...state};
