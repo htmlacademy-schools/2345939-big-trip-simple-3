@@ -74,7 +74,6 @@ export default class BoardPresenter {
   }
 
   init() {
-
     this.#renderBoard();
   }
 
